@@ -3,6 +3,7 @@ package com.alkhalij.guessgame;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,19 +31,34 @@ public class MainActivity extends AppCompatActivity {
         number = (int) (Math.random() * 100);
 
         btCheck.setOnClickListener(view -> checkAnswer());
+        etGuess.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                checkAnswer();
+                return true;
+            }
+            return false;
+        });
+        btReset.setOnClickListener(view -> resetGame());
+    }
+
+    private void resetGame() {
+        tvMessage.setText(R.string.init_message);
+        etGuess.setText("");
+        ivImoji.setImageResource(R.drawable.think);
+        number = (int) (Math.random() * 100);
     }
 
     private void checkAnswer() {
         int guess = Integer.parseInt(etGuess.getText().toString());
 
         if (guess > number) {
-            tvMessage.setText("Guess a smaller number");
+            tvMessage.setText(R.string.smaller);
         }
         else if (guess < number) {
-            tvMessage.setText("Guess a greater number");
+            tvMessage.setText(R.string.greater);
         }
         else {
-            tvMessage.setText("You Guessed Right!!");
+            tvMessage.setText(R.string.right);
             ivImoji.setImageResource(R.drawable.happy);
         }
     }

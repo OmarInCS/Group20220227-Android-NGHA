@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">GuessGame</string>
+    <string name="smaller">Guess a smaller number</string>
+    <string name="greater">Guess a greater number</string>
+    <string name="right">You Guessed Right!!</string>
+    <string name="init_message">Guess a num. btw. 0-100</string>
+    <string name="bt_check">Check</string>
+    <string name="bt_reset">Reset</string>
 </resources>
