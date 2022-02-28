@@ -3,21 +3,25 @@ package com.alkhalij.guessword;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Stack;
 
 import cz.msebera.android.httpclient.Header;
-
+// 05 99 888 921
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvScore;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private final AsyncHttpClient client = new AsyncHttpClient();
     private Stack<String> words;
     private String currentWord, blurredWord;
+    private int score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         fbHelp = findViewById(R.id.fb_help);
 
         loadTenWords();
+
+        fbCheck.setOnClickListener(view -> checkAnswer());
     }
 
     private void loadTenWords() {
@@ -61,17 +68,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 blurredWord = createBlurredWord();
+                if (blurredWord != null) {
+                    displayLetters(blurredWord);
+                }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                System.out.println("Error");
-                System.out.println(responseString);
-            }
-
-            @Override
-            public void onStart() {
-                System.out.println("Request started");
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                System.out.println(errorResponse);
             }
         });
     }
@@ -93,6 +97,46 @@ public class MainActivity extends AppCompatActivity {
         sb.setCharAt(idx2, '?');
 
         return sb.toString();
+    }
+
+    private void displayLetters(String word) {
+        llWord.removeAllViews();
+
+        for (char ch : word.toCharArray()) {
+            EditText et = new EditText(this);
+
+            et.setTextSize(64);
+
+            if (ch == '?') {
+                et.setHint("?");
+            }
+            else {
+                et.setText(ch + "");
+                et.setFocusable(false);
+            }
+
+            llWord.addView(et);
+        }
+    }
+
+    private void checkAnswer() {
+        String answer = "";
+        for (int i = 0; i < llWord.getChildCount(); i++) {
+            EditText et = (EditText) llWord.getChildAt(i);
+            answer += et.getText().toString();
+        }
+
+        if (answer.equals(currentWord)) {
+            score += 10;
+            tvScore.setText(score + "");
+            blurredWord = createBlurredWord();
+            if (blurredWord != null) {
+                displayLetters(blurredWord);
+            }
+        }
+        else {
+            Snackbar.make(llWord, "You Missed It!!", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
