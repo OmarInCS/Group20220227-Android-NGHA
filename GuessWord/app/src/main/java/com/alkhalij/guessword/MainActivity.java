@@ -14,6 +14,8 @@ import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 
+import java.util.Stack;
+
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String API_URL = "https://random-word-form.herokuapp.com/random/noun";
     private final AsyncHttpClient client = new AsyncHttpClient();
+    private Stack<String> words;
+    private String currentWord, blurredWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                System.out.println(response);
+                words = new Stack<>();
+                for (int i = 0; i < response.length(); i++) {
+                    String w = response.optString(i);
+                    if (w.length() >= 4 && w.length() <= 10) {
+                        words.push(w);
+                    }
+                }
+                blurredWord = createBlurredWord();
             }
 
             @Override
@@ -57,7 +68,31 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Error");
                 System.out.println(responseString);
             }
+
+            @Override
+            public void onStart() {
+                System.out.println("Request started");
+            }
         });
+    }
+
+    public String createBlurredWord() {
+
+        if (words.empty()) {
+            loadTenWords();
+            return null;
+        }
+
+        currentWord = words.pop();
+        System.out.println(currentWord);
+        int idx1 = (int) (Math.random() * currentWord.length());
+        int idx2 = (int) (Math.random() * currentWord.length());
+
+        StringBuilder sb = new StringBuilder(currentWord);
+        sb.setCharAt(idx1, '?');
+        sb.setCharAt(idx2, '?');
+
+        return sb.toString();
     }
 
     @Override
