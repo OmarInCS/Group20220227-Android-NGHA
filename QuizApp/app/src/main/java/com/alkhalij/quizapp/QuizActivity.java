@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ public class QuizActivity extends AppCompatActivity {
     private Button[] btChoices;
     private int level, x, y, numOfQuestions, correct;
     private ArrayList<Integer> choices;
+    private CountDownTimer timer;
 
 
     @Override
@@ -38,6 +40,7 @@ public class QuizActivity extends AppCompatActivity {
 
         generateQuestion();
         generateChoices();
+        initTimer();
 
         for (int i = 0; i < btChoices.length; i++) {
             int finalI = i;
@@ -45,7 +48,36 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
+    private void initTimer() {
+        int questionTime;
+        if (level == R.id.bt_easy) {
+            questionTime = 30;
+        }
+        else if (level == R.id.bt_normal) {
+            questionTime = 15;
+        }
+        else {
+            questionTime = 5;
+        }
+
+        tvTime.setText(String.format("%02d", questionTime));
+        timer = new CountDownTimer( questionTime * 1000, 1000) {
+            @Override
+            public void onTick(long l) {
+                tvTime.setText(String.format("%02d", l/1000));
+            }
+
+            @Override
+            public void onFinish() {
+                checkIfCompleted();
+            }
+        };
+
+        timer.start();
+    }
+
     private void checkChoice(int idx) {
+        timer.cancel();
         int userChoice = choices.get(idx);
 
         if (userChoice == x*y) {
@@ -72,6 +104,7 @@ public class QuizActivity extends AppCompatActivity {
         if (numOfQuestions != 5) {
             generateQuestion();
             generateChoices();
+            initTimer();
         }
         else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
