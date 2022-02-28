@@ -2,7 +2,11 @@ package com.alkhalij.guessword;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.EditText;
@@ -18,6 +22,8 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Stack;
 
 import cz.msebera.android.httpclient.Header;
@@ -106,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
             EditText et = new EditText(this);
 
             et.setTextSize(64);
+            et.setInputType(InputType.TYPE_CLASS_TEXT);
+            et.setMaxLines(1);
+            et.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
 
             if (ch == '?') {
                 et.setHint("?");
@@ -136,6 +145,21 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             Snackbar.make(llWord, "You Missed It!!", Snackbar.LENGTH_SHORT).show();
+            saveScore();
+        }
+    }
+
+    private void saveScore() {
+        SharedPreferences pref = getSharedPreferences("com.alkhalij.guesswordd", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt((new Date()).toString(), score);
+        editor.apply();
+
+        score = 0;
+        tvScore.setText("00");
+        blurredWord = createBlurredWord();
+        if (blurredWord != null) {
+            displayLetters(blurredWord);
         }
     }
 
