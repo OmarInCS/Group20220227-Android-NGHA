@@ -12,6 +12,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
+
 public class MainActivity extends AppCompatActivity {
 
     LocationManager locMgr;
@@ -37,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
 
                 System.out.println(lat);
                 System.out.println(lon);
+                RequestParams params = new RequestParams();
+                params.put("lat", lat);
+                params.put("lon", lon);
+                params.put("units", "metric");
+                params.put("appid", APP_ID);
+
+                getWeatherData(params);
             }
         };
 
@@ -56,6 +71,18 @@ public class MainActivity extends AppCompatActivity {
         }
         locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1000, locLstr);
     }
+
+    private void getWeatherData(RequestParams params) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(WEATHER_URL, params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println(response);
+            }
+        });
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
