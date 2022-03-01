@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private Stack<String> words;
     private String currentWord, blurredWord;
     private int score;
+    private int idx1;
+    private int idx2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
         currentWord = words.pop();
         System.out.println(currentWord);
-        int idx1 = (int) (Math.random() * currentWord.length());
-        int idx2 = (int) (Math.random() * currentWord.length());
+        idx1 = (int) (Math.random() * currentWord.length());
+        idx2 = (int) (Math.random() * currentWord.length());
 
         StringBuilder sb = new StringBuilder(currentWord);
         sb.setCharAt(idx1, '?');
@@ -130,6 +134,45 @@ public class MainActivity extends AppCompatActivity {
 
             llWord.addView(et);
         }
+
+
+        ((EditText) llWord.getChildAt(idx1)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() == 1) {
+                    llWord.getChildAt(idx2).requestFocus();
+                }
+            }
+        });
+
+        ((EditText) llWord.getChildAt(idx2)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() == 1) {
+                    llWord.getChildAt(idx1).requestFocus();
+                }
+            }
+        });
     }
 
     private void checkAnswer() {

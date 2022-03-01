@@ -29,6 +29,8 @@ public class HistoryActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+//        rvHistory.setAdapter();
     }
 
     private void loadHistoryData() throws ParseException {
