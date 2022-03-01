@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -22,6 +23,12 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView tvCity;
+    private TextView tvTemp;
+    private TextView tvDescription;
+    private TextView tvMinTemp;
+    private TextView tvMaxTemp;
+
     LocationManager locMgr;
 
     private static String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather";
@@ -31,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tvCity = findViewById(R.id.tv_city);
+        tvDescription = findViewById(R.id.tv_description);
+        tvTemp = findViewById(R.id.tv_temp);
+        tvMaxTemp = findViewById(R.id.tv_max_temp);
+        tvMinTemp = findViewById(R.id.tv_min_temp);
+
 
         getCurrentLocation();
     }
@@ -78,7 +92,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                System.out.println(response);
+                WeatherModel model = new WeatherModel(response);
+                tvCity.setText(model.getCity() + "\n" + model.getCountry());
+                tvDescription.setText(model.getDescription());
+                tvTemp.setText(model.getTemp() + "°C");
+                tvMaxTemp.setText(model.getMaxTemp() + "°C");
+                tvMinTemp.setText(model.getMinTemp() + "°C");
             }
         });
     }
