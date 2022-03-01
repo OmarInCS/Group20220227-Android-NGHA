@@ -1,18 +1,26 @@
 package com.alkhalij.currentweather;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -28,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvDescription;
     private TextView tvMinTemp;
     private TextView tvMaxTemp;
+    private ImageView ivBackground;
+    private FloatingActionButton fbCapture;
 
     LocationManager locMgr;
 
@@ -44,6 +54,24 @@ public class MainActivity extends AppCompatActivity {
         tvTemp = findViewById(R.id.tv_temp);
         tvMaxTemp = findViewById(R.id.tv_max_temp);
         tvMinTemp = findViewById(R.id.tv_min_temp);
+        ivBackground = findViewById(R.id.iv_background);
+        fbCapture = findViewById(R.id.fb_capture);
+
+        ActivityResultLauncher<Intent> luncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Bundle bundle = result.getData().getExtras();
+                        Bitmap image = (Bitmap) bundle.get("data");
+                        ivBackground.setImageBitmap(image);
+                    }
+                }
+        );
+
+        fbCapture.setOnClickListener(view -> {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            luncher.launch(intent);
+        });
 
 
         getCurrentLocation();
@@ -66,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
                 params.put("appid", APP_ID);
 
                 getWeatherData(params);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                System.out.println("Status Changed");
             }
         };
 
