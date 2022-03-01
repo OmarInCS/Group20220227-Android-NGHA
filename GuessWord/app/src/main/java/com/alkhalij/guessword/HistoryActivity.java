@@ -1,11 +1,13 @@
 package com.alkhalij.guessword;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,7 +32,9 @@ public class HistoryActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        rvHistory.setAdapter();
+        rvHistory.setLayoutManager(new LinearLayoutManager(this));
+        rvHistory.setAdapter(new HistoryAdapter(history, LayoutInflater.from(this)));
+
     }
 
     private void loadHistoryData() throws ParseException {

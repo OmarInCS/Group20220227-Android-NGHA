@@ -26,7 +26,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ViewHolder holder = new ViewHolder(inflater.inflate(R.layout.history_card, parent));
+        ViewHolder holder = new ViewHolder(inflater.inflate(R.layout.history_card, parent, false));
         return holder;
     }
 
@@ -59,7 +59,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         public ViewHolder(View view) {
             super(view);
 
-            tvCardScore = view.findViewById(R.id.tv_score);
+            tvCardScore = view.findViewById(R.id.tv_card_score);
             tvCardDate = view.findViewById(R.id.tv_card_date);
             ivEmoji = view.findViewById(R.id.iv_emoji);
         }
