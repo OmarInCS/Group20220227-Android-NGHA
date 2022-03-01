@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     LocationManager locMgr;
 
     private static String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather";
-    private static String APP_ID = "a4be0f1a234d4bad6c50ccd3474de621";
+    private static String APP_ID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
