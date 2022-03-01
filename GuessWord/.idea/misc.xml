@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Private/alkhalij/Group20220227/GuessWord/app/src/main/res/layout/activity_history.xml" value="0.128" />
         <entry key="..\:/Private/alkhalij/Group20220227/GuessWord/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Private/alkhalij/Group20220227/GuessWord/app/src/main/res/layout/history_card.xml" value="0.16" />
         <entry key="..\:/Private/alkhalij/Group20220227/GuessWord/app/src/main/res/menu/menu_main.xml" value="0.2" />
       </map>
     </option>

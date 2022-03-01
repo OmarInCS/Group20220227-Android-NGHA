@@ -1,14 +1,17 @@
 package com.alkhalij.guessword;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Stack;
@@ -152,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
     private void saveScore() {
         SharedPreferences pref = getSharedPreferences("com.alkhalij.guesswordd", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt((new Date()).toString(), score);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        editor.putInt(format.format(new Date()), score);
         editor.apply();
 
         score = 0;
@@ -167,5 +172,24 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.mi_share) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, blurredWord);
+            startActivity(intent);
+        }
+        else if (id == R.id.mi_history) {
+            Intent intent = new Intent(this, HistoryActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
